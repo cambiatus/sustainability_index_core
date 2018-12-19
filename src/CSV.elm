@@ -1,11 +1,16 @@
-module CSV exposing (build, nodeNameList, simpleEdgeListFromString, edgeListUsingDict, nodesFromNodeDict, nodeDictFromNames)
+module CSV exposing (graphFromString, stringFromGraph)
 
 import Graph
 import SimpleGraph exposing (SimpleGraph, Node, Edge)
 import Parser exposing (..)
 import Parser.Extras exposing (many)
 import List.Extra exposing (unique)
+import Maybe.Extra
 import Dict exposing (Dict)
+
+
+type SimpleEdge
+    = SimpleEdge String String Float
 
 
 {-| Build a graph from a string representing the graph in CSV format.
@@ -17,8 +22,8 @@ import Dict exposing (Dict)
 > Graph (Inner { left = Inner { left = Leaf { key = 0, value = { incoming = Empty, node = { id = 0, label = "A" }, outgoing = Inner { left = Leaf { key = 1, value = 1 }, prefix = { branchingBit = 2, prefixBits = 0 }, right = Leaf { key = 2, value = 2 }, size = 2 } } }, prefix = { branchingBit = 1, prefixBits = 0 }, right = Leaf { key = 1, value = { incoming = Leaf { key = 0, value = 1 }, node = { id = 1, label = "B" }, outgoing = Leaf { key = 3, value = 3 } } }, size = 2 }, prefix = { branchingBit = 2, prefixBits = 0 }, right = Inner { left = Leaf { key = 2, value = { incoming = Leaf { key = 0, value = 2 }, node = { id = 2, label = "C" }, outgoing = Leaf { key = 3, value = 4 } } }, prefix = { branchingBit = 1, prefixBits = 2 }, right = Leaf { key = 3, value = { incoming = Inner { left = Leaf { key = 1, value = 3 }, prefix = { branchingBit = 2, prefixBits = 0 }, right = Leaf { key = 2, value = 4 }, size = 2 }, node = { id = 3, label = "D" }, outgoing = Empty } }, size = 2 }, size = 4 })
 
 -}
-build : String -> SimpleGraph
-build csvString =
+graphFromString : String -> SimpleGraph
+graphFromString csvString =
     let
         simpleEdgeList =
             simpleEdgeListFromString csvString
@@ -33,6 +38,90 @@ build csvString =
             edgeListUsingDict dict simpleEdgeList
     in
         Graph.fromNodesAndEdges nodes edges
+
+
+{-|
+
+> data |> graphFromString |> stringFromGraph
+> "A,B,1\nA,C,2\nB,D,3\nC,D,4"
+-}
+stringFromGraph : SimpleGraph -> String
+stringFromGraph graph =
+    graph
+        |> simpleEdgeListFromGraph
+        |> List.map stringFromSimpleEdge
+        |> List.reverse
+        |> String.join ("\n")
+
+
+stringFromSimpleEdge : SimpleEdge -> String
+stringFromSimpleEdge (SimpleEdge from to label) =
+    from ++ "," ++ to ++ "," ++ String.fromFloat label
+
+
+
+-- export : SimpleGraph -> String
+-- export graph =
+
+
+{-|
+
+> data
+> "\nA,B,1\nA,C,2\nB,D,3\nC,D,4\n"
+
+> g = build data
+> Graph ..
+
+> simpleEdgeListFromGraph g
+> [SimpleEdge "C" "D" 4,SimpleEdge "B" "D" 3,SimpleEdge "A" "C" 2,SimpleEdge "A" "B" 1]
+
+-}
+simpleEdgeListFromGraph : SimpleGraph -> List SimpleEdge
+simpleEdgeListFromGraph graph =
+    let
+        dict =
+            graph |> Graph.nodes |> dictFromNodeList
+
+        edges =
+            graph |> Graph.edges
+    in
+        simpleEdgeListFromEdgeList dict edges
+
+
+addNodeToDict : Node -> Dict Int String -> Dict Int String
+addNodeToDict node dict =
+    Dict.insert node.id node.label dict
+
+
+pairFromNode : Node -> ( Int, String )
+pairFromNode node =
+    ( node.id, node.label )
+
+
+dictFromNodeList : List Node -> Dict Int String
+dictFromNodeList nodeList =
+    nodeList
+        |> List.map pairFromNode
+        |> Dict.fromList
+
+
+simpleEdgeListFromEdgeList : Dict Int String -> List Edge -> List SimpleEdge
+simpleEdgeListFromEdgeList dict edgeList =
+    edgeList
+        |> List.map (simpleEdgeFromEdge dict)
+        |> Maybe.Extra.values
+
+
+simpleEdgeFromEdge : Dict Int String -> Edge -> Maybe SimpleEdge
+simpleEdgeFromEdge dict edge =
+    let
+        sourceNode_ =
+            Dict.get edge.from dict
+
+        targetNode_ =
+            Dict.get edge.to dict
+    in
+        Maybe.map3 SimpleEdge sourceNode_ targetNode_ (Just edge.label)
 
 
 {-|
@@ -91,10 +180,6 @@ swap ( a, b ) =
 
 
 {- vvv SimpleEdge vvv -}
-
-
-type SimpleEdge
-    = SimpleEdge String String Float
 
 
 sourceNode : SimpleEdge -> String
