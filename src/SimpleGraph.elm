@@ -15,6 +15,16 @@ import IntDict
 import Maybe.Extra
 
 
+{-| A `SimpleGraph` is one in which
+the nodes have strings as labels
+and the edges have floats as labels.
+The edge label represents the flow
+of some quantity from node to node.
+
+Note that a SimpleGraph is an instance
+of the `Graph n e` type.
+
+-}
 type alias SimpleGraph =
     Graph String Float
 
