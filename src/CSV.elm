@@ -18,8 +18,13 @@ type SimpleEdge
 > data = "\nA,B,1\nA,C,2\nB,D,3\nC,D,4\n"
 > "\nA,B,1\nA,C,2\nB,D,3\nC,D,4\n" : String
 
-> build data
+> graphFromString data
 > Graph (Inner { left = Inner { left = Leaf { key = 0, value = { incoming = Empty, node = { id = 0, label = "A" }, outgoing = Inner { left = Leaf { key = 1, value = 1 }, prefix = { branchingBit = 2, prefixBits = 0 }, right = Leaf { key = 2, value = 2 }, size = 2 } } }, prefix = { branchingBit = 1, prefixBits = 0 }, right = Leaf { key = 1, value = { incoming = Leaf { key = 0, value = 1 }, node = { id = 1, label = "B" }, outgoing = Leaf { key = 3, value = 3 } } }, size = 2 }, prefix = { branchingBit = 2, prefixBits = 0 }, right = Inner { left = Leaf { key = 2, value = { incoming = Leaf { key = 0, value = 2 }, node = { id = 2, label = "C" }, outgoing = Leaf { key = 3, value = 4 } } }, prefix = { branchingBit = 1, prefixBits = 2 }, right = Leaf { key = 3, value = { incoming = Inner { left = Leaf { key = 1, value = 3 }, prefix = { branchingBit = 2, prefixBits = 0 }, right = Leaf { key = 2, value = 4 }, size = 2 }, node = { id = 3, label = "D" }, outgoing = Empty } }, size = 2 }, size = 4 })
+
+There is also an inverse operation:
+
+> data |> graphFromString |> stringFromGraph
+> "A,B,1\nA,C,2\nB,D,3\nC,D,4"
 
 -}
 graphFromString : String -> SimpleGraph
