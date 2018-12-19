@@ -7,7 +7,7 @@ then try this:
 
 ```
 $ elm repl
-> import Test
+> import Test exposing(..)
 > Test.run ex2
 { alpha = 0.3848187874515115
   , edgeCount = 13
@@ -15,7 +15,8 @@ $ elm repl
   , nodeCount = 8
   , resilience = 993.88
   , sustainability = 0.9564
-  , totalFlow = 456.2 }
+  , totalFlow = 456.2
+}
 ```
 
 The test data is in CSV format:

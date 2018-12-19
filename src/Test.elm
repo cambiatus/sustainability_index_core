@@ -1,10 +1,23 @@
-module Test exposing (..)
+module Test exposing (run, ex1, ex2)
 
 import CSV
 import FlowModel
 import SimpleGraph
 
 
+{-| Usage:
+
+> import Test exposing(ex1, ex2)
+
+> Test.run ex1
+> { alpha = 0.4773071923743501, edgeCount = 4, efficiency = 8.813
+> , nodeCount = 4, resilience = 9.651, sustainability = 0.9775, totalFlow = 10 }
+
+> Test.run ex2
+> { alpha = 0.3848187874515115, edgeCount = 13, efficiency = 621.709
+> , nodeCount = 8, resilience = 993.88, sustainability = 0.9564, totalFlow = 456.2 }
+
+-}
 type alias Report =
     { nodeCount : Int
     , edgeCount : Int
@@ -31,49 +44,49 @@ run input =
 sustainability : String -> Float
 sustainability input =
     input
-        |> CSV.build
+        |> CSV.graphFromString
         |> FlowModel.sustainability
 
 
 efficiency : String -> Float
 efficiency input =
     input
-        |> CSV.build
+        |> CSV.graphFromString
         |> FlowModel.efficiency
 
 
 resilience : String -> Float
 resilience input =
     input
-        |> CSV.build
+        |> CSV.graphFromString
         |> FlowModel.resilience
 
 
 alpha : String -> Float
 alpha input =
     input
-        |> CSV.build
+        |> CSV.graphFromString
         |> FlowModel.alpha
 
 
 totalFlow : String -> Float
 totalFlow input =
     input
-        |> CSV.build
+        |> CSV.graphFromString
         |> SimpleGraph.totalFlow
 
 
 nodeCount : String -> Int
 nodeCount input =
     input
-        |> CSV.build
+        |> CSV.graphFromString
         |> SimpleGraph.nodeCount
 
 
 edgeCount : String -> Int
 edgeCount input =
     input
-        |> CSV.build
+        |> CSV.graphFromString
         |> SimpleGraph.edgeCount
 
 
