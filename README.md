@@ -7,7 +7,7 @@ then try this:
 
 ```
 $ elm repl
-> import Test exposing(..)
+> import Test exposing(ex1, ex2)
 > Test.run ex2
 { alpha = 0.3848187874515115
   , edgeCount = 13
