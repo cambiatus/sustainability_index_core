@@ -1,4 +1,4 @@
-module CSV exposing (build, example, ex2)
+module CSV exposing (build)
 
 import SimpleGraph exposing (SimpleGraph, Node, Edge)
 import Parser exposing (..)
@@ -140,25 +140,3 @@ normalize str =
     str
         |> String.trim
         |> \x -> x ++ "\n"
-
-
-example =
-    "  \nA,B,23\nA,C,10\nB,D,40\nC,D,5  \n"
-
-
-ex2 =
-    """
-Lucca, Pablo, 30
-Lucca, Karla, 90.4
-Pablo, Ranulfo, 22
-Karla, Luz, 40
-Karla, Maria, 55
-Karla, Ranulfo, 31.4
-Jim, Karla, 30
-Jim, Ranulfo, 20
-Pablo, Karla, 34
-Ranulfo, Lucca, 20
-Luz, Maria, 22
-George, Maria, 31.4
-Lucca, Jim, 30
-"""
