@@ -1,14 +1,15 @@
-module SimpleGraph
-    exposing
-        ( SimpleGraph
-        , Node
-        , Edge
-        , outFlow
-        , inFlow
-        , totalFlow
-        , nodeCount
-        , edgeCount
-        )
+module SimpleGraph exposing (..)
+
+-- exposing
+--     ( SimpleGraph
+--     , Node
+--     , Edge
+--     , outFlow
+--     , inFlow
+--     , totalFlow
+--     , nodeCount
+--     , edgeCount
+--     )
 
 import Graph exposing (Graph)
 import IntDict
@@ -26,15 +27,23 @@ of the `Graph n e` type.
 
 -}
 type alias SimpleGraph =
-    Graph String Float
+    Graph NodeData EdgeData
+
+
+type alias NodeData =
+    { name : String }
+
+
+type alias EdgeData =
+    { flow : Float }
 
 
 type alias Node =
-    Graph.Node String
+    Graph.Node NodeData
 
 
 type alias Edge =
-    Graph.Edge Float
+    Graph.Edge EdgeData
 
 
 {-| Compute the sum of the labels on the outgoing edges of
@@ -46,6 +55,7 @@ outFlow nodeId graph =
         |> Maybe.map .outgoing
         |> Maybe.map IntDict.values
         |> Maybe.withDefault []
+        |> List.map .flow
         |> List.sum
 
 
@@ -58,6 +68,7 @@ inFlow nodeId graph =
         |> Maybe.map .incoming
         |> Maybe.map IntDict.values
         |> Maybe.withDefault []
+        |> List.map .flow
         |> List.sum
 
 
@@ -68,6 +79,7 @@ totalFlow graph =
     graph
         |> Graph.edges
         |> List.map .label
+        |> List.map .flow
         |> List.sum
 
 

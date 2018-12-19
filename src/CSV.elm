@@ -95,12 +95,12 @@ simpleEdgeListFromGraph graph =
 
 addNodeToDict : Node -> Dict Int String -> Dict Int String
 addNodeToDict node dict =
-    Dict.insert node.id node.label dict
+    Dict.insert node.id node.label.name dict
 
 
 pairFromNode : Node -> ( Int, String )
 pairFromNode node =
-    ( node.id, node.label )
+    ( node.id, node.label.name )
 
 
 dictFromNodeList : List Node -> Dict Int String
@@ -126,7 +126,7 @@ simpleEdgeFromEdge dict edge =
         targetNode_ =
             Dict.get edge.to dict
     in
-        Maybe.map3 SimpleEdge sourceNode_ targetNode_ (Just edge.label)
+        Maybe.map3 SimpleEdge sourceNode_ targetNode_ (Just edge.label.flow)
 
 
 {-|
@@ -145,7 +145,7 @@ edgeListUsingDict dict simpleEdgeList =
             Dict.get key dict |> Maybe.withDefault -1
 
         edgeFromSimpleEdge (SimpleEdge from to label) =
-            { from = getId from, to = getId to, label = label }
+            { from = getId from, to = getId to, label = { flow = label } }
     in
         simpleEdgeList |> List.map edgeFromSimpleEdge
 
@@ -160,9 +160,12 @@ nodesFromNodeDict dict =
     let
         getId key =
             Dict.get key dict |> Maybe.withDefault -1
+
+        makeNode key =
+            { id = getId key, label = { name = key } }
     in
         Dict.keys dict
-            |> List.map (\key -> { id = getId key, label = key })
+            |> List.map (\key -> makeNode key)
 
 
 {-|

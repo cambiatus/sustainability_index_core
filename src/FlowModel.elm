@@ -75,12 +75,12 @@ efficiencyOfEdge totalFlow_ graph edge =
             (SG.outFlow edge.from graph) * (SG.inFlow edge.to graph)
 
         numerator =
-            edge.label * totalFlow_
+            edge.label.flow * totalFlow_
 
         logRatio =
             (logBase 2) (numerator / denominator)
     in
-        roundTo 3 (edge.label * logRatio)
+        roundTo 3 (edge.label.flow * logRatio)
 
 
 resilienceOfEdge : Float -> SimpleGraph -> Edge -> Float
@@ -90,12 +90,12 @@ resilienceOfEdge totalFlow_ graph edge =
             (SG.outFlow edge.from graph) * (SG.inFlow edge.to graph)
 
         numerator =
-            edge.label * edge.label
+            edge.label.flow * edge.label.flow
 
         logRatio =
             (logBase 2) (numerator / denominator)
     in
-        edge.label * logRatio
+        edge.label.flow * logRatio
 
 
 roundTo : Int -> Float -> Float
