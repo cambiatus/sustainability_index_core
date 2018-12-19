@@ -78,7 +78,7 @@ edgeCount input =
 
 
 ex1 =
-    "  \nA,B,23\nA,C,10\nB,D,40\nC,D,5  \n"
+    "\nA,B,1\nA,C,2\nB,D,3\nC,D,4\n"
 
 
 ex2 =
